@@ -1,0 +1,7 @@
+name: Vehicle_Safety_Alert
+description: ""
+ports: []
+bricks:
+- arduino:motion_detection:
+    model: updown-wave-motion-detection
+icon: 😀

@@ -27,7 +27,11 @@ This project is ideal for:
 - Research and academic projects
 - Long-distance driving safety monitoring
 
+## Demo Video of The Project: 
 
+![Motion](WhatsApp Image 2026-02-02 at 21.39.52.jpeg)
+
+https://youtu.be/H55csNbtIxE?si=SlQcyJaOR4xlQGIU
 
 ## Technologies Used
 
@@ -228,379 +232,165 @@ Confidence Threshold: ≥ 0.6
 Temporal Threshold: ≥ 2.5 seconds continuous detection 
 Only sustained abnormal motion triggers an alert. 
 
- ![Project Screenshot](demo.png)
+ ![Project Screenshot](02216b9b-9fe9-4aa6-8e1b-aff7ef334afa)
 
- 
+📈 Figure 1: Accelerometer Signal (Time Domain)
 
-📊 Figure 1: Accelerometer Signal (Time Domain) 
+Description:
+This graph shows the raw accelerometer signals along the X, Y, and Z axes over time.
 
- 
+The Z-axis remains centered around gravitational acceleration (≈9.81 m/s²).
 
-Description: 
+X and Y axes show oscillatory patterns corresponding to lateral and vertical vehicle movements.
 
-
-
-Caption: 
-
+Purpose:
+To demonstrate how different vehicle motion patterns produce distinguishable acceleration signatures that can be learned by the ML model.
 Figure 1. Raw accelerometer signals for different vehicle motion classes. 
 
  
+![Motion](0cb6e114-6477-42ab-904b-ea6d87dd51d7)
+📊 Figure 2: Motion Classification Confidence Scores
 
-📊 Figure 2: Motion Classification Confidence 
+Description:
+This bar graph represents the confidence scores output by the ML-based motion classifier for each motion class.
 
- 
+Highest confidence is observed for Snake motion
 
-Description: 
+Other classes remain below the confidence threshold
 
-Bar graph showing confidence scores for each motion class. 
+Purpose:
+To justify the system’s decision to trigger a vehicle shake alert only when the confidence exceeds a predefined threshold.
 
- 
-
-Caption: 
-
-Figure 2. Model confidence distribution across motion classes. 
-
- 
-
+Caption:
+Figure 2. Confidence distribution of the motion classification model across different vehicle motion classes.
 2️⃣ Driver Drowsiness Detection Model 
 
-📌 Problem Definition 
 
- 
+![Motion](60e27e62-5df8-462b-80fa-55e0a0f015b1)
+👁️ Figure 3: Eye Detection Across Video Frames
+
+Description:
+This plot shows eye detection results across consecutive video frames.
+
+- 1 indicates eyes detected (driver alert)
+
+- 0 indicates eyes not detected (possible eye closure)
+
+A continuous drop to zero across multiple frames indicates driver drowsiness rather than normal blinking.
+
+Purpose:
+To validate the temporal logic used for drowsiness detection.
+
+Caption:
+Figure 3. Eye detection results across consecutive video frames.
+
+
+
+### 📌 Problem Definition 
 
 Detect driver fatigue by monitoring eye closure duration using real-time camera input. 
 
- 
+#### 👁️ Computer Vision Pipeline 
 
-👁️ Computer Vision Pipeline 
+1.Face Detection 
+- Haar Cascade: haarcascade_frontalface_default.xml 
 
- 
+2.Eye Detection 
+- Haar Cascade: haarcascade_eye_tree_eyeglasses.xml 
 
-Face Detection 
+3.Eye State Analysis 
+- Eyes detected → Driver alert 
+- Eyes missing → Possible drowsiness 
 
- 
-
-Haar Cascade: haarcascade_frontalface_default.xml 
-
- 
-
-Eye Detection 
-
- 
-
-Haar Cascade: haarcascade_eye_tree_eyeglasses.xml 
-
- 
-
-Eye State Analysis 
-
- 
-
-Eyes detected → Driver alert 
-
- 
-
-Eyes missing → Possible drowsiness 
-
- 
-
-🧠 Drowsiness Decision Logic 
-
- 
+### 🧠 Drowsiness Decision Logic 
 
 Let: 
-
- 
-
-𝐹 
-
-𝑐 
-
-F 
-
-c 
-
-​ 
-
- 
-
-= consecutive frames with eyes closed 
-
- 
-
-If: 
-
- 
-
-𝐹 
-
-𝑐 
-
-≥ 
-
-3 
-
-F 
-
-c 
-
-​ 
-
- 
-
-≥3 
-
- 
+- Fc = consecutive frames with eyes closed 
+ if:
+   Fc >= 3
 
 → Driver is classified as drowsy 
-
- 
-
 This temporal filtering reduces false alerts due to blinking. 
 
- 
+### 📷 Image Processing Steps 
+- RGB frame captured from USB camera 
+- Resized for performance optimization 
+- Converted to grayscale 
+- ROI (upper half of face) used for eye detection 
 
-📷 Image Processing Steps 
 
- 
+### 3️⃣ Alert Decision Fusion Logic 
 
-RGB frame captured from USB camera 
-
- 
-
-Resized for performance optimization 
-
- 
-
-Converted to grayscale 
-
- 
-
-ROI (upper half of face) used for eye detection 
-
- 
-
-📊 Suggested Graphs 
-
-📊 Figure 3: Eye Detection Over Frames 
-
- 
-
-Description: 
-
-Binary plot showing eye detected (1) vs not detected (0) across frames. 
-
- 
-
-Caption: 
-
-Figure 3. Eye detection consistency across video frames. 
-
- 
-
-📊 Figure 4: Drowsiness Detection Timeline 
-
- 
-
-Description: 
-
-Timeline showing detected drowsiness events with alert timestamps. 
-
- 
-
-Caption: 
-
-Figure 4. Driver drowsiness events over time. 
-
- 
-
-3️⃣ Alert Decision Fusion Logic 
-
-🔀 Multi-Modal Decision System 
-
- 
-
-The system combines: 
-
- 
-
-Motion ML output 
-
- 
-
-Vision-based drowsiness detection 
-
- 
-
+#### 🔀 Multi-Modal Decision System 
+The system combines:
+- Motion ML output 
+- Vision-based drowsiness detection 
 Each operates independently but shares: 
-
- 
-
-Cooldown timers 
-
- 
-
-Telegram notification service 
-
- 
+- Cooldown timers 
+- Telegram notification service 
 
 This design ensures robustness and modularity. 
 
  
 
-🚨 Alert Trigger Conditions 
+#### 🚨 Alert Trigger Conditions 
 
-Condition	Trigger 
+Condition	Trigger :
 
-Vehicle Shake	ML confidence ≥ 0.6 for ≥ 2.5s 
-
-Driver Drowsiness	Eyes closed ≥ 3 frames 
-
-Cooldown	10 seconds between alerts 
-
-🖼️ System Images (Recommended) 
-
-🖼️ Figure 5: System Block Diagram 
-
- 
-
+- Vehicle Shake	ML confidence ≥ 0.6 for ≥ 2.5s 
+- Driver Drowsiness	Eyes closed ≥ 3 frames 
+- Cooldown	10 seconds between alerts
+- 
 Description: 
-
 Sensor → Arduino MCU → Linux App → ML Models → Telegram Alert 
 
+### 📉 Performance Considerations 
+
+- Real-time inference on edge device 
+- Low CPU & memory footprint 
+- Minimal latency suitable for live driving conditions 
+- Scalable to additional sensors or models 
+
+ ### 📌 Research Significance 
  
-
-Caption: 
-
-Figure 5. Overall system architecture of the Vehicle Safety System. 
-
- 
-
-🖼️ Figure 6: Real-Time Driver Monitoring 
-
- 
-
-Description: 
-
-Camera frame with detected face and eye bounding boxes. 
-
- 
-
-Caption: 
-
-Figure 6. Eye detection during real-time driver monitoring. 
-
- 
-
-🖼️ Figure 7: Telegram Alert Output 
-
- 
-
-Description: 
-
-Screenshot of Telegram alert with timestamp and captured image. 
-
- 
-
-Caption: 
-
-Figure 7. Telegram alert generated on drowsiness detection. 
-
- 
-
-📉 Performance Considerations 
-
- 
-
-Real-time inference on edge device 
-
- 
-
-Low CPU & memory footprint 
-
- 
-
-Minimal latency suitable for live driving conditions 
-
- 
-
-Scalable to additional sensors or models 
-
- 
-
-📌 Research Significance 
-
- 
-
 This system demonstrates: 
+- Practical edge AI deployment 
+- Sensor + vision multi-modal fusion 
+- Real-time safety monitoring without cloud dependency 
 
- 
-
-Practical edge AI deployment 
-
- 
-
-Sensor + vision multi-modal fusion 
-
- 
-
-Real-time safety monitoring without cloud dependency 
-
-🔔 Alert System
+### 🔔 Alert System
 Separate cooldown timers for: 
+- Vehicle shake alerts 
+- Drowsiness alerts 
+- Prevents alert spamming 
+- Alerts include: 
+- Detection type 
+- Confidence (for motion) 
+- Timestamp 
 
-Vehicle shake alerts 
+### 🔄 System Workflow
+- Sensor data captured by Modulino® Movement Sensor 
+- Motion samples forwarded to Linux via Arduino Bridge 
+- ML model classifies vehicle motion 
+- Camera continuously monitors driver eyes 
+- Abnormal conditions detected 
+- Telegram alert sent instantly 
 
-Drowsiness alerts 
+### ✅ Advantages
+- Real-time embedded processing 
+- AI-powered motion analysis 
+- Non-intrusive driver monitoring 
+- Low-cost hardware setup 
+- Scalable and customizable 
 
-Prevents alert spamming 
+### 🚀 Future Enhancements
+- Deep learning–based eye state detection 
+- GPS-based location alerts 
+- Cloud dashboard for analytics 
+- Integration with vehicle CAN bus 
+- Audio or haptic alerts inside vehicle 
 
-Alerts include: 
-
-Detection type 
-
-Confidence (for motion) 
-
-Timestamp 
-
-Optional image 
-
-🔄 System Workflow
-Sensor data captured by Modulino® Movement Sensor 
-
-Motion samples forwarded to Linux via Arduino Bridge 
-
-ML model classifies vehicle motion 
-
-Camera continuously monitors driver eyes 
-
-Abnormal conditions detected 
-
-Telegram alert sent instantly 
-
-✅ Advantages
-Real-time embedded processing 
-
-AI-powered motion analysis 
-
-Non-intrusive driver monitoring 
-
-Low-cost hardware setup 
-
-Scalable and customizable 
-
-🚀 Future Enhancements
-Deep learning–based eye state detection 
-
-GPS-based location alerts 
-
-Cloud dashboard for analytics 
-
-Integration with vehicle CAN bus 
-
-Audio or haptic alerts inside vehicle 
-
-📌 Conclusion
+### 📌 Conclusion
 The Vehicle Safety System – Motion & Driver Drowsiness Detection demonstrates how embedded AI, computer vision, and sensor fusion can be combined to build an effective real-time safety solution. The project is practical, scalable, and well-suited for modern intelligent transportation systems. 
 
 By detecting unsafe vehicle motion and driver fatigue early, this system has the potential to significantly reduce road accidents and improve driving safety. 

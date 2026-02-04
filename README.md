@@ -29,7 +29,7 @@ This project is ideal for:
 
 ## Demo Video of The Project: 
 
-![Motion](WhatsApp Image 2026-02-02 at 21.39.52.jpeg)
+![Motion](demo.jpeg)
 
 https://youtu.be/H55csNbtIxE?si=SlQcyJaOR4xlQGIU
 
